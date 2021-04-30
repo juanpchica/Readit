@@ -8,16 +8,28 @@ const register = async (req: Request,res: Response) => {
 
     //Create a new user in db
     try{
-        // TODO: Validate data
 
-        // TODO: Create user
+        let errors:any = {}
+
+        // Validate data
+        const usernameUser = await User.findOne({username});
+        const emailUser = await User.findOne({email});
+
+        if(usernameUser) errors.username = "Username is already taken";
+        if(emailUser) errors.email = "Email is already taken";
+
+        if(Object.keys(errors).length > 0){
+            return res.status(400).json(errors);
+        }
+
+        // Create user
         const user = new User({email,username,password});
 
         //Validate error from user passed
-        const errors = await validate(user);
-
+        errors = await validate(user);
         if(errors.length >0) return res.status(400).json({errors});
 
+        //User Persist to DB
         user.save();
 
         // TODO: Return user
