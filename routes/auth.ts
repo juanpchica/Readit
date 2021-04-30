@@ -30,7 +30,7 @@ const register = async (req: Request,res: Response) => {
         if(errors.length >0) return res.status(400).json({errors});
 
         //User Persist to DB
-        user.save();
+        await user.save();
 
         // TODO: Return user
         return res.json(user);

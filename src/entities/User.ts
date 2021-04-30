@@ -1,5 +1,7 @@
-import { IsEmail, Min } from "class-validator";
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn} from "typeorm";
+import { IsEmail, Length } from "class-validator";
+import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert} from "typeorm";
+
+import bcrypt from "bcrypt";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -16,12 +18,12 @@ export class User extends BaseEntity {
     @Column({unique:true})
     email: string
 
-    @Min(3)
+    @Length(3,255,{message: "Username must be atleast 3 characteres long"})
     @Index()
     @Column({unique:true})
     username: string
 
-    @Min(6)
+    @Length(6,255)
     @Column()
     password: string
 
@@ -31,5 +33,8 @@ export class User extends BaseEntity {
     @UpdateDateColumn()
     updatedAt: Date
 
-
+    @BeforeInsert()
+    async hashPassword(){
+        this.password = await bcrypt.hash(this.password,6);
+    }
 }
