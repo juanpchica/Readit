@@ -10,7 +10,7 @@ const app = express()
 app.use(express.json())
 app.use(morgan('dev'))
 
-app.get('/', (req,res) => res.send("Hello world!!"))
+app.get('/', (_,res) => res.send("Hello world!!"))
 
 app.listen(5000, async()=>{
     console.log('Server is running at port 5000')
