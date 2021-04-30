@@ -11,12 +11,17 @@ const register = (req: Request,res: Response) => {
 
         // TODO: Create user
         const user = new User({email,username,password});
-        
-        // TODO: Return user
-    }catch(err){
+        user.save();
 
+        // TODO: Return user
+        return res.json(user);
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({error:"Something went wrong"});
     }
 }
 
 const router = Router()
 router.post("/register",register);
+
+export default router;
