@@ -40,7 +40,22 @@ const register = async (req: Request,res: Response) => {
     }
 }
 
+const login = async (req: Request, res:Response) => {
+
+    const {username,password} = req.body;
+    
+    try{
+        const user = await User.findOne(username);
+
+        if(!user) return res.json("Username doesn´t exits !!");
+
+    }catch(err){
+        console.log(err);
+    }
+}
+
 const router = Router()
 router.post("/register",register);
+router.post("/login",login);
 
 export default router;
