@@ -6,6 +6,7 @@ import { User } from '../src/entities/User';
 import bcrypt from 'bcrypt';
 import  jwt  from "jsonwebtoken";
 import cookie from "cookie";
+import auth from '../src/middlewere/auth';
 
 const register = async (req: Request,res: Response) => {
     const { email, username, password } = req.body;
@@ -85,23 +86,7 @@ const login = async (req: Request, res:Response) => {
 }
 
 const me = async (req:Request,res:Response)=>{
-    try{
-        const token = req.cookies.token;
-        if(!token) throw new Error('Unauthenticated')
-
-        //Verified if token is equal to the already created
-        const { username } :any = jwt.verify(token,process.env.JWT_TOKEN);
-        
-        const user = await User.findOne({username});
-
-        if(!user) throw new Error('Unauthenticated')
-
-        return res.json(user);
-
-    }catch(err){
-        console.log(err);
-        return res.status(401).json({error:"Unauthenticated"});
-    }
+    return res.json(res.locals.user);
 }
 
 const logout = (_: Request, res: Response) => {
@@ -122,7 +107,7 @@ const logout = (_: Request, res: Response) => {
 const router = Router()
 router.post("/register",register);
 router.post("/login",login);
-router.get("/me",me);
-router.get('/logout', logout)
+router.get("/me",auth,me);
+router.get('/logout',auth, logout)
 
 export default router;
