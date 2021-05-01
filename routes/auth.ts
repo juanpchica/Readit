@@ -1,5 +1,5 @@
 
-import { validate } from 'class-validator';
+import { isEmpty,validate } from 'class-validator';
 import {Request,Response,Router} from 'express'
 import { User } from '../src/entities/User';
 
@@ -47,6 +47,13 @@ const login = async (req: Request, res:Response) => {
     const {username,password} = req.body;
     
     try{
+
+        let errors: any = {};
+        if(!username || username == "") errors.username = "Username must not be empty";
+        if(isEmpty(password)) errors.password = "Password must not be empty";
+
+        if(Object.keys(errors).length > 0) return res.status(400).json(errors);
+
         const user = await User.findOne({username});
 
         if(!user) return res.status(400).json({error:"Username not found"});
@@ -56,7 +63,7 @@ const login = async (req: Request, res:Response) => {
 
         if(!passwordMatches) return res.status(401).json({password:"Password is incorrect!"})
 
-        
+        return res.status(200).json(user);
 
     }catch(err){
         console.log(err);
