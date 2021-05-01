@@ -7,8 +7,8 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
 
-import  authRoutes from "../routes/auth";
-import  postRoutes from "../routes/posts";
+import  authRoutes from "./routes/auth";
+import  postRoutes from "./routes/posts";
 import trim from "./middlewere/trim";
 
 

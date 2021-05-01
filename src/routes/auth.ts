@@ -1,12 +1,12 @@
 
 import { isEmpty,validate } from 'class-validator';
 import {Request,Response,Router} from 'express'
-import User from '../src/entities/User';
+import User from '../entities/User';
 
 import bcrypt from 'bcrypt';
 import  jwt  from "jsonwebtoken";
 import cookie from "cookie";
-import auth from '../src/middlewere/auth';
+import auth from '../middlewere/auth';
 
 const register = async (req: Request,res: Response) => {
     const { email, username, password } = req.body;
