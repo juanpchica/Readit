@@ -12,6 +12,7 @@ import trim from "./middlewere/trim";
 
 
 const app = express()
+const PORT = process.env.PORT;
 
 app.use(express.json())
 app.use(morgan('dev'))
@@ -22,8 +23,8 @@ app.get('/', (_,res) => res.send("Hello world!!"))
 app.use("/api/auth",authRoutes);
 
 
-app.listen(5000, async()=>{
-    console.log('Server is running at port 5000')
+app.listen(PORT, async()=>{
+    console.log(`Server is running at port ${PORT}`)
 
     try{
         await createConnection()

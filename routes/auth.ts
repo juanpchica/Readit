@@ -1,7 +1,7 @@
 
 import { isEmpty,validate } from 'class-validator';
 import {Request,Response,Router} from 'express'
-import { User } from '../src/entities/User';
+import User from '../src/entities/User';
 
 import bcrypt from 'bcrypt';
 import  jwt  from "jsonwebtoken";
