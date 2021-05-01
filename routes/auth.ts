@@ -3,6 +3,8 @@ import { validate } from 'class-validator';
 import {Request,Response,Router} from 'express'
 import { User } from '../src/entities/User';
 
+import bcrypt from 'bcrypt';
+
 const register = async (req: Request,res: Response) => {
     const { email, username, password } = req.body;
 
@@ -32,7 +34,7 @@ const register = async (req: Request,res: Response) => {
         //User Persist to DB
         await user.save();
 
-        // TODO: Return user
+        // Return user
         return res.json(user);
     }catch(err){
         console.log(err)
@@ -45,9 +47,16 @@ const login = async (req: Request, res:Response) => {
     const {username,password} = req.body;
     
     try{
-        const user = await User.findOne(username);
+        const user = await User.findOne({username});
 
-        if(!user) return res.json("Username doesn´t exits !!");
+        if(!user) return res.status(400).json({error:"Username not found"});
+
+        //Validate if password matches with the exist one
+        const passwordMatches = await bcrypt.compare(password,user.password);
+
+        if(!passwordMatches) return res.status(401).json({password:"Password is incorrect!"})
+
+        
 
     }catch(err){
         console.log(err);
