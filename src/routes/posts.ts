@@ -1,5 +1,5 @@
 import {Request,Response, Router} from 'express'
-import { Post } from '../entities/Post';
+import Post from '../entities/Post';
 import auth from '../middlewere/auth';
 
 const createPost = async (req:Request, res:Response) => {
