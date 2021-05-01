@@ -1,5 +1,6 @@
-import { Column, Entity as TOEntity, Index} from "typeorm";
+import { Column, Entity as TOEntity, Index, JoinColumn, ManyToOne} from "typeorm";
 import Entity from "./Entity";
+import User from "./User";
 
 @TOEntity("posts")
 export class Post extends Entity{
@@ -25,4 +26,8 @@ export class Post extends Entity{
 
     @Column()
     subName: string
+
+    @JoinColumn({ name: 'username', referencedColumnName: 'username' })
+    @ManyToOne(() => User, user => user.posts)
+    user: User;
 }
