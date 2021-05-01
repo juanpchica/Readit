@@ -66,26 +66,48 @@ const login = async (req: Request, res:Response) => {
         if(!passwordMatches) return res.status(401).json({password:"Password is incorrect!"})
 
         //Create token for user logged
-        const token = jwt.sign({username},"j15hj4t545t4j5yt4j5tbvbfgerwreq");
+        const token = jwt.sign({username},process.env.JWT_TOKEN);
 
         //Set my cookie with the token created
         res.set('Set-Cookie',cookie.serialize("token",token,{
             httpOnly:true,
-            secure:false,
+            secure:process.env.NODE_ENV === "production",
             sameSite:'strict',
             maxAge:3600,
             path:"/"
         }))
 
-        return res.status(200).json({user,token});
+        return res.status(200).json(user);
 
     }catch(err){
         console.log(err);
     }
 }
 
+const me = async (req:Request,res:Response)=>{
+    try{
+        const token = req.cookies.token;
+        if(!token) throw new Error('Unauthenticated')
+
+        //Verified if token is equal to the already created
+        const { username } :any = jwt.verify(token,process.env.JWT_TOKEN);
+        
+        const user = await User.findOne({username});
+
+        if(!user) throw new Error('Unauthenticated')
+
+        return res.json(user);
+
+    }catch(err){
+        console.log(err);
+        return res.status(401).json({error:"Unauthenticated"});
+    }
+    
+}
+
 const router = Router()
 router.post("/register",register);
 router.post("/login",login);
+router.get("/me",me);
 
 export default router;
