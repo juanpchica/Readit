@@ -9,7 +9,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     if(!token) throw new Error('Unauthenticated')
 
     //Verified if token is equal to the already created
-    const { username } :any = jwt.verify(token,process.env.JWT_TOKEN);
+    const { username } :any = jwt.verify(token,process.env.JWT_TOKEN!);
     
     const user = await User.findOne({username});
 

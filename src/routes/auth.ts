@@ -67,7 +67,7 @@ const login = async (req: Request, res:Response) => {
         if(!passwordMatches) return res.status(401).json({password:"Password is incorrect!"})
 
         //Create token for user logged
-        const token = jwt.sign({username},process.env.JWT_TOKEN);
+        const token = jwt.sign({username},process.env.JWT_TOKEN!);
 
         //Set my cookie with the token created
         res.set('Set-Cookie',cookie.serialize("token",token,{
@@ -82,10 +82,11 @@ const login = async (req: Request, res:Response) => {
 
     }catch(err){
         console.log(err);
+        return res.json({error:'Something went wrong'})
     }
 }
 
-const me = async (req:Request,res:Response)=>{
+const me = async (_:Request,res:Response)=>{
     return res.json(res.locals.user);
 }
 
