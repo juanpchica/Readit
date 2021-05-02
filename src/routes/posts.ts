@@ -29,8 +29,20 @@ const createPost = async (req:Request, res:Response) => {
     }
 }
 
+const getPosts = async(_:Request,res:Response) => {
+    
+    try{
+        const posts = await Post.find();
+
+        return res.status(200).json(posts);
+    }catch(err){
+        console.log('Something went wrong!!');
+        return res.json({error:"Something went wrong"});
+    }
+}
+
 const router = Router();
 
 router.post("/",auth,createPost);
-
+router.get("/",getPosts);
 export default router;
