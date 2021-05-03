@@ -1,41 +1,39 @@
 import "reflect-metadata";
-import {createConnection} from "typeorm";
+import { createConnection } from "typeorm";
 
 import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
-import  authRoutes from "./routes/auth";
-import  postRoutes from "./routes/posts";
-import  subRoutes from './routes/subs'
-
+import authRoutes from "./routes/auth";
+import postRoutes from "./routes/posts";
+import subRoutes from "./routes/subs";
 
 import trim from "./middlewere/trim";
 
-
-const app = express()
+const app = express();
 const PORT = process.env.PORT;
 
-app.use(express.json())
-app.use(morgan('dev'))
+app.use(express.json());
+app.use(morgan("dev"));
 app.use(trim);
 app.use(cookieParser());
+app.use(cors());
 
-app.get('/', (_,res) => res.send("Hello world!!"))
-app.use("/api/auth",authRoutes);
-app.use("/api/posts",postRoutes);
-app.use("/api/subs",subRoutes);
+app.get("/", (_, res) => res.send("Hello world!!"));
+app.use("/api/auth", authRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/subs", subRoutes);
 
+app.listen(PORT, async () => {
+  console.log(`Server is running at port ${PORT}`);
 
-app.listen(PORT, async()=>{
-    console.log(`Server is running at port ${PORT}`)
-
-    try{
-        await createConnection()
-        console.log('Database connected!')
-    }catch(err){
-        console.log(err);
-        
-    }
-})
+  try {
+    await createConnection();
+    console.log("Database connected!");
+  } catch (err) {
+    console.log(err);
+  }
+});

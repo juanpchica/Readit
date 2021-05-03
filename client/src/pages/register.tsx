@@ -1,17 +1,30 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+
+import Axios from "axios";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [agreement, setAgreement] = useState(false);
+  const [agreement, setAgreement] = useState<any>(false);
 
-  const register = (e) => {
+  const register = async (e: FormEvent) => {
     e.preventDefault();
 
     console.log(email, username, password, agreement);
+    try {
+      const res = await Axios.post("/auth/register", {
+        email,
+        password,
+        username,
+      });
+
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className='flex'>
