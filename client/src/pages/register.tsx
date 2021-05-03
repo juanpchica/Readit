@@ -3,27 +3,31 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 import Axios from "axios";
+import InputGroup from "../components/InputGroup";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [agreement, setAgreement] = useState<any>(false);
+  const [errors, setErrors] = useState<any>({});
 
   const register = async (e: FormEvent) => {
     e.preventDefault();
 
-    console.log(email, username, password, agreement);
+    if (!agreement) {
+      setErrors({ ...errors, agreement: "You must agree to T&Cs" });
+      return;
+    }
+
     try {
       const res = await Axios.post("/auth/register", {
         email,
         password,
         username,
       });
-
-      console.log(res.data);
     } catch (error) {
-      console.log(error);
+      setErrors(error.response.data);
     }
   };
   return (
@@ -58,34 +62,34 @@ export default function Register() {
               <label htmlFor='agreement' className='text-xs cursor-pointer'>
                 I agree to get emails about cool stuff on Readit
               </label>
+              <small className='block font-medium text-red-600'>
+                {errors.agreement}
+              </small>
             </div>
-            <div className='mb-2'>
-              <input
-                type='email'
-                className='w-full px-3 py-2 bg-gray-100 border border-gray-400 rounded'
-                placeholder='Email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className='mb-2'>
-              <input
-                type='text'
-                className='w-full px-3 py-2 bg-gray-100 border border-gray-400 rounded'
-                placeholder='Username'
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div className='mb-2'>
-              <input
-                type='password'
-                className='w-full px-3 py-2 bg-gray-100 border border-gray-400 rounded'
-                placeholder='Password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+            <InputGroup
+              className='mb-2'
+              type='email'
+              value={email}
+              setValue={setEmail}
+              placeholder='EMAIL'
+              error={errors.email}
+            />
+            <InputGroup
+              className='mb-2'
+              type='text'
+              value={username}
+              setValue={setUsername}
+              placeholder='USERNAME'
+              error={errors.username}
+            />
+            <InputGroup
+              className='mb-4'
+              type='password'
+              value={password}
+              setValue={setPassword}
+              placeholder='PASSWORD'
+              error={errors.password}
+            />
             <button
               type='submit'
               className='w-full py-2 mb-4 text-xs font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded'
