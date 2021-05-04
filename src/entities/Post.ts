@@ -1,4 +1,13 @@
-import { BeforeInsert, Column, Entity as TOEntity, Index, JoinColumn, ManyToOne, OneToMany} from "typeorm";
+import { Expose } from "class-transformer";
+import {
+  BeforeInsert,
+  Column,
+  Entity as TOEntity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 import { makeid, slugify } from "../util/helper";
 import Comment from "./Comment";
 import Entity from "./Entity";
@@ -6,44 +15,57 @@ import Sub from "./Sub";
 import User from "./User";
 
 @TOEntity("posts")
-export default class Post extends Entity{
-    
-    constructor(post: Partial<Post>){
-        super();
-        Object.assign(this,post);
-    }
+export default class Post extends Entity {
+  constructor(post: Partial<Post>) {
+    super();
+    Object.assign(this, post);
+  }
 
-    @Index()
-    @Column()
-    identifier: string // 7 Character Id
+  @Index()
+  @Column()
+  identifier: string; // 7 Character Id
 
-    @Column()
-    title: string
+  @Column()
+  title: string;
 
-    @Index()
-    @Column()
-    slug: string
+  @Index()
+  @Column()
+  slug: string;
 
-    @Column({ nullable: true, type: 'text' })
-    body: string
+  @Column({ nullable: true, type: "text" })
+  body: string;
 
-    @Column()
-    subName: string
+  @Column()
+  subName: string;
 
-    @JoinColumn({ name: 'username', referencedColumnName: 'username' })
-    @ManyToOne(() => User, user => user.posts)
-    user: User;
+  @Column()
+  username: string;
 
-    @ManyToOne(() => Sub, (sub) => sub.posts)
-    @JoinColumn({ name: 'subName', referencedColumnName: 'name' })
-    sub: Sub
+  @JoinColumn({ name: "username", referencedColumnName: "username" })
+  @ManyToOne(() => User, (user) => user.posts)
+  user: User;
 
-    @OneToMany(() => Comment, (comment) => comment.post)
-    comments: Comment[]
+  @ManyToOne(() => Sub, (sub) => sub.posts)
+  @JoinColumn({ name: "subName", referencedColumnName: "name" })
+  sub: Sub;
 
-    @BeforeInsert()
-    makeIdAndSlug(){
-        this.identifier = makeid(7);
-        this.slug = slugify(this.title);
-    }
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Comment[];
+
+  @Expose()
+  get url(): string {
+    return `/r/${this.subName}/${this.identifier}/${this.slug}`;
+  }
+
+  // protected url: string
+  // @AfterLoad()
+  // createFields() {
+  //   this.url = `/r/${this.subName}/${this.identifier}/${this.slug}`
+  // }
+
+  @BeforeInsert()
+  makeIdAndSlug() {
+    this.identifier = makeid(7);
+    this.slug = slugify(this.title);
+  }
 }

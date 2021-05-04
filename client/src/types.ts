@@ -6,4 +6,8 @@ export interface Post {
   slug: string;
   subName: string;
   identifier: string;
+  title: string;
+
+  // Virtual fields
+  url: string;
 }
