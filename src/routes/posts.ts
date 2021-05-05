@@ -3,6 +3,7 @@ import Comment from "../entities/Comment";
 import Post from "../entities/Post";
 import Sub from "../entities/Sub";
 import auth from "../middlewere/auth";
+import user from "../middlewere/user";
 
 const createPost = async (req: Request, res: Response) => {
   const { title, body, sub } = req.body;
@@ -33,13 +34,17 @@ const getPosts = async (_: Request, res: Response) => {
   try {
     const posts = await Post.find({
       order: { createdAt: "DESC" },
-      relations: ["comments"],
+      relations: ["comments", "votes", "sub"],
     });
 
-    return res.status(200).json(posts);
+    if (res.locals.user) {
+      posts.forEach((p) => p.setUserVote(res.locals.user));
+    }
+
+    return res.json(posts);
   } catch (err) {
-    console.log("Something went wrong!!");
-    return res.json({ error: "Something went wrong" });
+    console.log(err);
+    return res.status(500).json({ error: "Something went wrong" });
   }
 };
 
@@ -80,9 +85,9 @@ const commentOnPost = async (req: Request, res: Response) => {
 
 const router = Router();
 
-router.post("/", auth, createPost);
-router.get("/", getPosts);
+router.post("/", user, auth, createPost);
+router.get("/", user, getPosts);
 router.get("/:identifier/:slug", getPost);
-router.post("/:identifier/:slug/comments", auth, commentOnPost);
+router.post("/:identifier/:slug/comments", user, auth, commentOnPost);
 
 export default router;
