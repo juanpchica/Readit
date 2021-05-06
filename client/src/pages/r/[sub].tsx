@@ -11,8 +11,6 @@ function Sub() {
   //Fetching data from server
   const { data: sub, error } = useSWR(subName ? "/subs/" + subName : null);
 
-  console.log(sub);
-
   //If error then redirect to home page
   if (error) router.push("/");
 
