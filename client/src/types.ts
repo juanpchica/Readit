@@ -21,3 +21,13 @@ export interface User {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Sub {
+  name: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  imageUrn: string;
+  bannerUrn: string;
+  posts: Post[];
+}
