@@ -1,25 +1,31 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 
 import Axios from "axios";
 import InputGroup from "../components/InputGroup";
-
+import { AuthContext } from "../context/Auth";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<any>({});
 
   const router = useRouter();
+
+  const context = useContext(AuthContext);
+
   const login = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      await Axios.post("/auth/login", {
+      const resp = await Axios.post("/auth/login", {
         password,
         username,
       });
+
+      //Use Context for for user data when login
+      context.loginContext(resp.data);
 
       router.push("/");
     } catch (error) {
