@@ -34,7 +34,9 @@ function MyApp({ Component, pageProps }) {
     >
       <AuthProvider>
         {!authRoute && <Navbar />}
-        <Component {...pageProps} />
+        <div className={!authRoute ? "pt-12" : ""}>
+          <Component {...pageProps} />
+        </div>
       </AuthProvider>
     </SWRConfig>
   );
