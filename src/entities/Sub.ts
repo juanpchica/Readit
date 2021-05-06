@@ -5,39 +5,39 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-} from 'typeorm'
+} from "typeorm";
 
-import Entity from './Entity'
-import User from './User'
-import Post from './Post'
+import Entity from "./Entity";
+import User from "./User";
+import Post from "./Post";
 
-@TOEntity('subs')
+@TOEntity("subs")
 export default class Sub extends Entity {
   constructor(sub: Partial<Sub>) {
-    super()
-    Object.assign(this, sub)
+    super();
+    Object.assign(this, sub);
   }
 
   @Index()
   @Column({ unique: true })
-  name: string
+  name: string;
 
   @Column()
-  title: string
+  title: string;
 
-  @Column({ type: 'text', nullable: true })
-  description: string
-
-  @Column({ nullable: true })
-  imageUrn: string
+  @Column({ type: "text", nullable: true })
+  description: string;
 
   @Column({ nullable: true })
-  bannerUrn: string
+  imageUrn: string;
+
+  @Column({ nullable: true })
+  bannerUrn: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'username', referencedColumnName: 'username' })
-  user: User
+  @JoinColumn({ name: "username", referencedColumnName: "username" })
+  user: User;
 
   @OneToMany(() => Post, (post) => post.sub)
-  posts: Post[]
+  posts: Post[];
 }
