@@ -1,6 +1,5 @@
 import Axios from "axios";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
 
 import Navbar from "../components/Navbar";
 
