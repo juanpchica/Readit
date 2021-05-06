@@ -5,24 +5,30 @@ import { FormEvent, useContext, useState } from "react";
 
 import Axios from "axios";
 import InputGroup from "../components/InputGroup";
+import { useAuthDispatch, useAuthState } from "../context/Auth";
+
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<any>({});
 
+  const dispatch = useAuthDispatch();
+  const { authenticated } = useAuthState();
+
   const router = useRouter();
+  if (authenticated) router.push("/");
 
   const login = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      const resp = await Axios.post("/auth/login", {
+      const res = await Axios.post("/auth/login", {
         password,
         username,
       });
 
       //Use Context for for user data when login
-      //context.loginContext(resp.data);
+      dispatch("LOGIN", res.data);
 
       router.push("/");
     } catch (error) {
