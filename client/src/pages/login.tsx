@@ -5,15 +5,12 @@ import { FormEvent, useContext, useState } from "react";
 
 import Axios from "axios";
 import InputGroup from "../components/InputGroup";
-import { AuthContext } from "../context/Auth";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<any>({});
 
   const router = useRouter();
-
-  const context = useContext(AuthContext);
 
   const login = async (e: FormEvent) => {
     e.preventDefault();
@@ -25,7 +22,7 @@ export default function Login() {
       });
 
       //Use Context for for user data when login
-      context.loginContext(resp.data);
+      //context.loginContext(resp.data);
 
       router.push("/");
     } catch (error) {
