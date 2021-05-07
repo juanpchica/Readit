@@ -24,10 +24,16 @@ export interface User {
 
 export interface Sub {
   name: string;
+  username: string;
   title: string;
   description: string;
   createdAt: string;
+  updatedAt: string;
   imageUrn: string;
   bannerUrn: string;
   posts: Post[];
+
+  //Virtuals
+  imageUrl: string;
+  bannerUrl: string;
 }
