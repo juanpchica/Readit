@@ -14,7 +14,6 @@ export default function Home() {
   const { data: posts } = useSWR("/posts");
   const { data: topSubs } = useSWR("/misc/top-subs");
 
-  console.log(topSubs);
   return (
     <Fragment>
       <Head>
@@ -44,12 +43,14 @@ export default function Home() {
                 >
                   <div className='mr-2 overflow-hidden rounded-full cursor-pointer'>
                     <Link href={`/r/${sub.name}`}>
-                      <Image
-                        src={sub.imageUrl}
-                        alt='Sub'
-                        width={(6 * 16) / 4}
-                        height={(6 * 16) / 4}
-                      />
+                      <a>
+                        <Image
+                          src={sub.imageUrl}
+                          alt='Sub'
+                          width={(6 * 16) / 4}
+                          height={(6 * 16) / 4}
+                        />
+                      </a>
                     </Link>
                   </div>
                   <Link href={`/r/${sub.name}`}>

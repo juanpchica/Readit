@@ -30,7 +30,7 @@ export default function Login() {
       //Use Context for for user data when login
       dispatch("LOGIN", res.data);
 
-      router.push("/");
+      router.back();
     } catch (error) {
       setErrors(error.response.data);
     }

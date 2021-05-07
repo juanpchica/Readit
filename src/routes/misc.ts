@@ -77,11 +77,11 @@ const topSubs = async (_: Request, res: Response) => {
      * LIMIT 5;
      */
     //const imageUrlExp = `COALESCE('${process.env.APP_URL}/images/' || s."imageUrn" , 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y')`;
-    const imageUrlExpCase = ` CASE WHEN (s."imageUrn"!='' OR s."imageUrn" IS NULL) then '${process.env.APP_URL}/images/' || s."imageUrn" ELSE 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' END`;
+    const imageUrlExp = ` CASE WHEN (s."imageUrn"!='' OR s."imageUrn" IS NULL) then '${process.env.APP_URL}/images/' || s."imageUrn" ELSE 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' END`;
     const subs = await getConnection()
       .createQueryBuilder()
       .select(
-        `s.title, s.name, ${imageUrlExpCase} as "imageUrl", count(p.id) as "postCount"`
+        `s.title, s.name, ${imageUrlExp} as "imageUrl", count(p.id) as "postCount"`
       )
       .from(Sub, "s")
       .leftJoin(Post, "p", `s.name = p."subName"`)

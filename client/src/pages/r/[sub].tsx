@@ -15,6 +15,7 @@ import Image from "next/image";
 import classNames from "classnames";
 import { useAuthState } from "../../context/Auth";
 import axios from "axios";
+import Sidebar from "../../components/Sidebar";
 
 function Sub() {
   // Local state
@@ -76,72 +77,75 @@ function Sub() {
   }
 
   return (
-    <Fragment>
+    <div>
       <Head>
         <title>{sub?.title}...</title>
       </Head>
       {sub && (
         <Fragment>
-          <input
-            type='file'
-            hidden={true}
-            ref={fileInputRef}
-            onChange={uploadImage}
-          />
           <div>
-            {/* Banner image */}
-            <div
-              className={classNames("bg-blue-500", {
-                "cursor-pointer": ownSub,
-              })}
-              onClick={() => openFileInput("banner")}
-            >
-              {sub.bannerUrl ? (
-                <div
-                  className='h-56 bg-blue-500'
-                  style={{
-                    backgroundImage: `url(${sub.bannerUrl})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                ></div>
-              ) : (
-                <div className='h-20 bg-blue-500'></div>
-              )}
-            </div>
-            {/* Sub meta data */}
-            <div className='h-20 bg-white'>
-              <div className='container relative flex'>
-                <div className='absolute' style={{ top: -15 }}>
-                  <Image
-                    src={sub.imageUrl}
-                    alt='Sub'
-                    className={classNames("rounded-full", {
-                      "cursor-pointer": ownSub,
-                    })}
-                    onClick={() => openFileInput("image")}
-                    width={70}
-                    height={70}
-                  />
-                </div>
-                <div className='pt-1 pl-24'>
-                  <div className='flex items-center'>
-                    <h1 className='mb-1 text-3xl font-bold'>{sub.title}</h1>
+            <input
+              type='file'
+              hidden={true}
+              ref={fileInputRef}
+              onChange={uploadImage}
+            />
+            <div>
+              {/* Banner image */}
+              <div
+                className={classNames("bg-blue-500", {
+                  "cursor-pointer": ownSub,
+                })}
+                onClick={() => openFileInput("banner")}
+              >
+                {sub.bannerUrl ? (
+                  <div
+                    className='h-56 bg-blue-500'
+                    style={{
+                      backgroundImage: `url(${sub.bannerUrl})`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
+                ) : (
+                  <div className='h-20 bg-blue-500'></div>
+                )}
+              </div>
+              {/* Sub meta data */}
+              <div className='h-20 bg-white'>
+                <div className='container relative flex'>
+                  <div className='absolute' style={{ top: -15 }}>
+                    <Image
+                      src={sub.imageUrl}
+                      alt='Sub'
+                      className={classNames("rounded-full", {
+                        "cursor-pointer": ownSub,
+                      })}
+                      onClick={() => openFileInput("image")}
+                      width={70}
+                      height={70}
+                    />
                   </div>
-                  <p className='text-sm font-bold text-gray-500'>
-                    /r/{sub.name}
-                  </p>
+                  <div className='pt-1 pl-24'>
+                    <div className='flex items-center'>
+                      <h1 className='mb-1 text-3xl font-bold'>{sub.title}</h1>
+                    </div>
+                    <p className='text-sm font-bold text-gray-500'>
+                      /r/{sub.name}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <div className='container flex pt-5'>
+            <div className='w-160'>{postsMarkup}</div>
+            <Sidebar sub={sub} />
+          </div>
         </Fragment>
       )}
-      <div className='container flex pt-5'>
-        <div className='w-160'>{postsMarkup}</div>
-      </div>
-    </Fragment>
+    </div>
   );
 }
 
