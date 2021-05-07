@@ -32,8 +32,6 @@ function Sub() {
     subName ? "/subs/" + subName : null
   );
 
-  console.log(sub);
-
   useEffect(() => {
     if (!sub) return;
     setOwnSub(authenticated && user.username === sub.username);
