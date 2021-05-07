@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { isEmpty } from "class-validator";
 import { getRepository } from "typeorm";
-import multer from "multer";
+import multer, { FileFilterCallback } from "multer";
 import path from "path";
 
 import User from "../entities/User";
@@ -77,28 +77,33 @@ const getSubs = async (req: Request, res: Response) => {
 //Multer middleware for image
 const upload = multer({
   storage: multer.diskStorage({
-    destination: "public/",
-    filename(_, file, callback) {
-      const name = makeid(7);
+    destination: "public/images",
+    filename: (_, file, callback) => {
+      const name = makeid(15);
+      console.log(name + path.extname(file.originalname));
       callback(null, name + path.extname(file.originalname)); // e.g fdsafasd.jpg
     },
   }),
-  fileFilter: (_, file: any, callback: multer.FileFilterCallback) => {
+  fileFilter: (_, file: any, callback: FileFilterCallback) => {
+    console.log(file);
     //Validate type image
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+      console.log("image uploading");
       callback(null, true);
     } else {
-      callback(null, false);
+      callback(new Error("Not an image"));
     }
   },
 });
 
-const uploadSubImage = (req: Request, res: Response) => {};
+const uploadSubImage = async (_: Request, res: Response) => {
+  return res.json({ success: true });
+};
 
 const router = Router();
 
 router.post("/", user, auth, createSub);
 router.get("/:name", user, getSubs);
-router.post("/:name/image", user, auth, uploadSubImage);
+router.post("/:name/image", user, auth, upload.single("file"), uploadSubImage);
 
 export default router;
