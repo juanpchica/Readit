@@ -32,7 +32,7 @@ export interface Sub {
   imageUrn: string;
   bannerUrn: string;
   posts: Post[];
-
+  postCount: number;
   //Virtuals
   imageUrl: string;
   bannerUrl: string;
