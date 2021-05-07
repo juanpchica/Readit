@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { isEmpty } from "class-validator";
 import { getRepository } from "typeorm";
 import multer, { FileFilterCallback } from "multer";
@@ -74,6 +74,25 @@ const getSubs = async (req: Request, res: Response) => {
   }
 };
 
+//Validate if own Sub
+const ownSub = async (req: Request, res: Response, next: NextFunction) => {
+  const user = res.locals.user;
+  try {
+    //Get info for that sub
+    const sub = await Sub.findOneOrFail({ where: { name: req.params.name } });
+
+    if (sub.username !== user.username) {
+      return res.status(403).json({ error: "You dont own this sub" });
+    }
+
+    res.locals.sub = sub;
+
+    return next(); //Return to the next middleware
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 //Multer middleware for image
 const upload = multer({
   storage: multer.diskStorage({
@@ -104,6 +123,13 @@ const router = Router();
 
 router.post("/", user, auth, createSub);
 router.get("/:name", user, getSubs);
-router.post("/:name/image", user, auth, upload.single("file"), uploadSubImage);
+router.post(
+  "/:name/image",
+  user,
+  auth,
+  ownSub,
+  upload.single("file"),
+  uploadSubImage
+);
 
 export default router;
