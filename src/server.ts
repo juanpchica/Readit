@@ -11,6 +11,7 @@ import authRoutes from "./routes/auth";
 import postRoutes from "./routes/posts";
 import subRoutes from "./routes/subs";
 import miscRoutes from "./routes/misc";
+import usersRoutes from "./routes/users";
 
 import trim from "./middlewere/trim";
 
@@ -35,6 +36,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/subs", subRoutes);
 app.use("/api/misc", miscRoutes);
+app.use("/api/users", usersRoutes);
 
 app.listen(PORT, async () => {
   console.log(`Server is running at port ${PORT}`);
