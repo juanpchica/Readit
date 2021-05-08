@@ -49,7 +49,7 @@ const PostPage = () => {
       value = 0;
 
     try {
-      const res = await axios.post("/misc/vote", {
+      await axios.post("/misc/vote", {
         identifier,
         slug,
         commentIdentifier: comment?.identifier,
