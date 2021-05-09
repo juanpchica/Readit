@@ -1,10 +1,10 @@
 import Head from "next/head";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import { PostCard } from "../components/PostCard";
-import useSWR from "swr";
+import useSWR, { useSWRInfinite } from "swr";
 import { Post, Sub } from "../types";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,10 +12,52 @@ import { useAuthState } from "../context/Auth";
 dayjs.extend(relativeTime);
 
 export default function Home() {
+  const [observedPost, setObservedPost] = useState("");
+
+  //const { data: posts } = useSWR<Post[]>("/posts");
+  const { data: topSubs } = useSWR<Sub[]>("/misc/top-subs");
+
+  //Global State
   const { authenticated } = useAuthState();
 
-  const { data: posts } = useSWR<Post[]>("/posts");
-  const { data: topSubs } = useSWR<Sub[]>("/misc/top-subs");
+  const {
+    data,
+    error,
+    size: page,
+    setSize: setPage,
+    isValidating,
+    revalidate,
+  } = useSWRInfinite<Post[]>((index) => `/posts?page=${index}`, {
+    revalidateAll: true,
+  });
+
+  const isInitialLoading = !data && !error;
+  const posts: Post[] = data ? [].concat(...data) : [];
+
+  useEffect(() => {
+    if (!posts || posts.length === 0) return;
+
+    const id = posts[posts.length - 1].identifier;
+
+    if (id !== observedPost) {
+      setObservedPost(id);
+      observeElement(document.getElementById(id));
+    }
+  }, [posts]);
+
+  const observeElement = (element: HTMLElement) => {
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting === true) {
+          setPage(page + 1);
+          observer.unobserve(element);
+        }
+      },
+      { threshold: 1 }
+    );
+    observer.observe(element);
+  };
 
   return (
     <Fragment>
@@ -24,10 +66,18 @@ export default function Home() {
       </Head>
       <div className='container flex pt-4'>
         {/* Posts feed */}
-        <div className='w-full md:w-160'>
+        <div className='w-full px-4 md:w-160 md:p-0'>
+          {isInitialLoading && <p className='text-lg text-center'>Loading..</p>}
           {posts?.map((post) => (
-            <PostCard post={post} key={post.identifier} />
+            <PostCard
+              post={post}
+              key={post.identifier}
+              revalidate={revalidate}
+            />
           ))}
+          {isValidating && posts.length > 0 && (
+            <p className='text-lg text-center'>Loading More..</p>
+          )}
         </div>
 
         {/* Sidebar */}
