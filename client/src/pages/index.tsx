@@ -8,9 +8,12 @@ import useSWR from "swr";
 import { Post, Sub } from "../types";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuthState } from "../context/Auth";
 dayjs.extend(relativeTime);
 
 export default function Home() {
+  const { authenticated } = useAuthState();
+
   const { data: posts } = useSWR<Post[]>("/posts");
   const { data: topSubs } = useSWR<Sub[]>("/misc/top-subs");
 
@@ -61,6 +64,16 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            {authenticated && (
+              <div className='p-4 border-t-2'>
+                <Link href='/subs/create'>
+                  <a className='w-full px-2 py-1 blue button'>
+                    Create Community
+                  </a>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
