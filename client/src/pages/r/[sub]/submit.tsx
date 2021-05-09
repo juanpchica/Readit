@@ -40,7 +40,7 @@ export default function submit() {
       <Head>
         <title>Submit to Readit</title>
       </Head>
-      <div className='w-160'>
+      <div className='w-full md:w-160'>
         <div className='p-4 bg-white rounded'>
           <h1 className='mb-3 text-lg'>Submit a post to /r/{subName}</h1>
           <form onSubmit={submitPost}>
