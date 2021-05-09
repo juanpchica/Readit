@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useAuthState } from "../../../../context/Auth";
 import { Post, Comment } from "../../../../types";
@@ -19,7 +19,7 @@ dayjs.extend(relativeTime);
 const PostPage = () => {
   // Local state
   const [newComment, setNewComment] = useState("");
-
+  const [description, setDescription] = useState("");
   // Global state
   const { authenticated, user } = useAuthState();
 
@@ -79,10 +79,22 @@ const PostPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (!post) return;
+    let desc = post.body || post.title;
+    desc = desc.substring(0, 158).concat(".."); // Hello world..
+    setDescription(desc);
+  }, [post]);
+
   return (
     <>
       <Head>
         <title>{post?.title}</title>
+        <meta name='description' content={description}></meta>
+        <meta property='og:description' content={description} />
+        <meta property='og:title' content={post?.title} />
+        <meta property='twitter:description' content={description} />
+        <meta property='twitter:title' content={post?.title} />
       </Head>
       <Link href={`/r/${sub}`}>
         <a>
