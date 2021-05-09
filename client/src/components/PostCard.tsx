@@ -29,6 +29,7 @@ export const PostCard = ({
     commentCount,
     url,
     username,
+    sub,
   },
   revalidate,
 }: PostCardProps) => {
@@ -93,7 +94,7 @@ export const PostCard = ({
             <>
               <Link href={`/r/${subName}`}>
                 <img
-                  src='https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
+                  src={sub.imageUrl}
                   className='w-6 h-6 mr-1 rounded-full cursor-pointer'
                 />
               </Link>
